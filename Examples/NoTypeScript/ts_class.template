@@ -1,0 +1,14 @@
+﻿export interface I${ClassName} {
+${Properties}
+}
+
+export class ${ClassName} implements I${ClassName} {
+  state: I${ClassName}
+${Properties}
+  constructor(raw: I${ClassName}) {
+    for (let key in Object.keys(raw)) {
+      this[key] = raw[key];
+    }
+    this.state = raw;    
+  }
+}

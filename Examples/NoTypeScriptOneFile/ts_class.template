@@ -1,0 +1,15 @@
+﻿export interface I${ClassName} {
+${Properties}
+}
+
+export class ${ClassName} extends Datum<I${ClassName}> {
+  state: I${ClassName}
+${Properties}
+  constructor(raw: IWidget) {
+    super();
+    for (let key in Object.keys(raw)) {
+      this[key] = raw[key];
+    }
+    this.state = raw;    
+  }
+}

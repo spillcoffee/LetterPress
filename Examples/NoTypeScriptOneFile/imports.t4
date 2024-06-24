@@ -1,0 +1,15 @@
+﻿<#@import namespace="System.Threading.Tasks" #><#@ 
+import namespace="System.Linq" #><#@
+import namespace="System.Text" #><#@
+import namespace="System.IO" #><#@
+import namespace="System.Runtime" #><#@
+import namespace="System.Collections.Immutable" #><#@
+import namespace="System.Collections.Generic" #><#@
+import namespace="Microsoft.CodeAnalysis" #><#@
+import namespace="Microsoft.CodeAnalysis.CSharp" #><#@
+import namespace="Microsoft.CodeAnalysis.CSharp.Syntax" #><#@
+import namespace="Microsoft.VisualStudio.TextTemplating"#><#@
+import namespace="LetterPress" #><#@
+import namespace="LetterPress.Deboss" #><#@
+import namespace="LetterPress.Extensions"
+#>

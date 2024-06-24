@@ -1,0 +1,14 @@
+﻿<#@ 
+assembly name="System.Core" #><#@
+assembly name="System.Runtime" #><#@
+assembly name="$(SolutionDir)bin\Debug\net452\System.Reflection.Metadata.dll" #><#@
+assembly name="$(SolutionDir)bin\Debug\net452\System.Collections.Immutable.dll" #><#@
+assembly name="$(SolutionDir)bin\Debug\net452\Microsoft.CodeAnalysis.dll" #><#@
+assembly name="$(SolutionDir)bin\Debug\net452\Microsoft.CodeAnalysis.Desktop.dll" #><#@
+assembly name="$(SolutionDir)bin\Debug\net452\Microsoft.CodeAnalysis.CSharp.dll" #><#@
+assembly name="$(SolutionDir)bin\Debug\net452\Microsoft.CodeAnalysis.CSharp.Desktop.dll" #><#@
+assembly name="$(SolutionDir)bin\Debug\net452\Microsoft.CodeAnalysis.Scripting.dll" #><#@
+assembly name="$(SolutionDir)bin\Debug\net452\Microsoft.CodeAnalysis.Scripting.CSharp.dll" #><#@
+assembly name="Microsoft.VisualStudio.TextTemplating"#><#@ 
+assembly name="$(SolutionDir)bin\Debug\net452\LetterPress.dll" 
+#>

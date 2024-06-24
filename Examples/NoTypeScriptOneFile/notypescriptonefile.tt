@@ -1,0 +1,40 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ output extension=".debug" #>
+<#@ include file="assemblies.t4" #>
+<#@ include file="imports.t4" #><#
+    string currentDirectory = Directory.GetCurrentDirectory();
+    WriteLine("Current Directory: " + currentDirectory);
+    Write("Framework Version: ");
+    Write(Environment.Version.ToString());
+    Write("\n");
+#><#
+var press = new Press();
+press.LoadClassesFromDirectory($@"{currentDirectory}/Examples/Entities");
+
+var deboss = new TypescriptDeboss();
+deboss.LoadGeneratedTemplate(
+this.Host.ResolvePath($@"{currentDirectory}/Examples/generated.template")
+);
+deboss.LoadClassTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/NoTypeScriptOneFile/ts_class.template")
+);
+deboss.LoadPropertyTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/NoTypeScriptOneFile/ts_property.template")
+);
+
+// Add references to classes that are also being generated.
+deboss.Classes = press.Classes;
+
+deboss.LoadAllTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/NoTypeScriptOneFile/ts_all.template")
+);
+
+deboss.ImpressAllToFile(
+  press.Classes, // Classes to deboss
+  $@"{currentDirectory}/Examples/NoTypeScriptOneFile/Output", // Output of deboss
+  "ALL.g.ts" // Place all files into one file,
+  );
+
+#>
+
+
