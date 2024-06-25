@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace LetterPress.Forme {
   /// <summary>
   /// In terms of a Letter Press a Forme is as follows:
-  /// Definition: A forme is a collection of types and spacing materials 
+  /// A forme is a collection of types and spacing materials 
   /// locked into a chase (a metal frame) to create a page layout.
   /// 
   /// In this project a Forme is a collection of templates, used by the Press

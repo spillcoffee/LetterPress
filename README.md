@@ -57,8 +57,9 @@ public class Widget
 }
 ```
 
-### Example TypeScript template for classes
+### Example TypeScript templates
 ```typescript
+// File: ts_class.template
 export interface I${ClassName} {
 ${Properties}
 }
@@ -73,9 +74,7 @@ ${Properties}
     this.state = raw;    
   }
 }
-```
-### Example TypeScript template class properties
-```typescript
+// File: ts_property.template
     ${PropertyName}: ${PropertyType};
 ```
 ### Can be incorporated into a .tt or .t4 template file
@@ -116,7 +115,7 @@ press.Ink(
 
 ### Output into individual files
 ```typescript
-// Placed into Fidget.g.ts
+// Generated file: Fidget.g.ts
 export interface IFidget {
     Id: string;
     Name: string;
@@ -135,8 +134,8 @@ export class Fidget implements IFidget {
     this.state = raw;    
   }
 }
-// Smidget.g.ts is not created
-// Placed into Widget.g.ts
+// Skipped generating file: Smidget.g.ts
+// Generated file: Widget.g.ts
 export interface IWidget {
     Id: string;
     Name: string;
@@ -155,6 +154,71 @@ export class Widget implements IWidget {
     LastUpdatedAt: Date;
 
   constructor(raw: IWidget) {
+    for (let key in Object.keys(raw)) {
+      this[key] = raw[key];
+    }
+    this.state = raw;    
+  }
+}
+
+```
+### Output all classes to a single file
+Change configuration of Forme and Press
+```csharp
+// Specify a file to used for placement of generated classes, in this case
+// used to provide any needed imports for typescript.
+forme.LoadAllTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/NoTypeScriptOneFile/ts_all.template")
+);
+
+// Call InkToFile instead
+press.InkToFile(
+  $@"{currentDirectory}/Examples/NoTypeScriptOneFile/Output", // Output of deboss
+  "ALL.g.ts" // Place all files into one file,
+  );
+```
+Inking creates a single file All*.**g*ts
+```typescript
+import { Datum } from "./Datum";
+
+export interface IFidget {
+  Id: string;
+  Name: string;
+
+}
+
+export class Fidget extends Datum<IFidget> {
+  state: IFidget
+  Id: string;
+  Name: string;
+
+  constructor(raw: IWidget) {
+    super();
+    for (let key in Object.keys(raw)) {
+      this[key] = raw[key];
+    }
+    this.state = raw;    
+  }
+}
+export interface IWidget {
+  Id: string;
+  Name: string;
+  Description: string;
+  CreatedAt: Date;
+  LastUpdatedAt: Date;
+
+}
+
+export class Widget extends Datum<IWidget> {
+  state: IWidget
+  Id: string;
+  Name: string;
+  Description: string;
+  CreatedAt: Date;
+  LastUpdatedAt: Date;
+
+  constructor(raw: IWidget) {
+    super();
     for (let key in Object.keys(raw)) {
       this[key] = raw[key];
     }
