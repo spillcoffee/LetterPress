@@ -11,5 +11,6 @@ import namespace="Microsoft.CodeAnalysis.CSharp.Syntax" #><#@
 import namespace="Microsoft.VisualStudio.TextTemplating"#><#@
 import namespace="LetterPress" #><#@
 import namespace="LetterPress.Deboss" #><#@
-import namespace="LetterPress.Extensions"
+import namespace="LetterPress.Extensions"#><#@
+import namespace="LetterPress.Forme"
 #>

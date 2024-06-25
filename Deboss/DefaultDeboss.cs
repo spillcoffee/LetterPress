@@ -1,4 +1,5 @@
 ﻿using LetterPress.Extensions;
+using LetterPress.Forme;
 using LetterPress.Replacements;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
@@ -6,67 +7,18 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.IO;
 using System.Linq;
-
+using System.Reflection;
 using System.Text;
 
 namespace LetterPress.Deboss
 {
   public class DefaultDeboss : IDeboss {
+    public IForme Forme { get; set; }
     public virtual Func<ClassDeclarationSyntax, bool> IncludeClass { get; set; }
     public virtual Func<PropertyDeclarationSyntax, bool> IncludeProperty { get; set; }
     public virtual Func<MethodDeclarationSyntax, bool> IncludeMethod { get; set; }
 
-    public string AllTemplate { get; set; }
-    public string ClassTemplate { get; set; }
-    public string GeneratedTemplate { get; set; }
-    public string MethodTemplate { get; set; }
-    public string ParameterTemplate { get; set; }
-    public string PropertyTemplate { get; set; }
     public DefaultDeboss() {
-      AllTemplate = "${All}";
-      ClassTemplate = $"Default impressing of class {Clazz.ClassName}\n" + Clazz.Properties + "\n";
-      GeneratedTemplate = $"/*\n * Generated code, do not modify!\n */\n\n";
-      MethodTemplate = $"Default impressing of method {Method.ReturnType} {Method.MethodName}\n";
-      ParameterTemplate = $"- Default impressing of parameter {Parameter.VariableType} {Parameter.VariableName}\n";
-      PropertyTemplate = $"-.Default impressing of property {Property.PropertyType} {Property.PropertyName}\n";
-    }
-
-    private string Load(string fileLocation) => File.ReadAllText(fileLocation);
-    public string LoadAllTemplate(string fileLocation) => AllTemplate = Load(fileLocation);
-    public string LoadClassTemplate(string fileLocation) => ClassTemplate = Load(fileLocation);
-    public string LoadGeneratedTemplate(string fileLocation) => GeneratedTemplate = Load(fileLocation);
-    public string LoadMethodTemplate(string fileLocation) => MethodTemplate = Load(fileLocation);
-    public string LoadParameterTemplate(string fileLocation) => ParameterTemplate = Load(fileLocation);
-    public string LoadPropertyTemplate(string fileLocation) => PropertyTemplate = Load(fileLocation);
-
-    public virtual void ImpressInto(Dictionary<string, ClassDeclarationSyntax> classes, string outputDir,  Func<ClassDeclarationSyntax, string> fileName) {
-      foreach (var cls in classes) {
-        if (!IncludeClass(cls.Value)) continue;
-        string filePath = Path.Combine(outputDir, fileName(cls.Value));
-        File.WriteAllText(filePath, GeneratedTemplate + Impress(cls.Value));
-      }
-    }
-
-    public virtual void ImpressAllToFile(Dictionary<string, ClassDeclarationSyntax> classes, string outputDir, string fileName) {
-      string filePath = Path.Combine(outputDir, fileName);
-      File.WriteAllText(filePath, "");// Recreate file.
-      var classStrBuilder = new StringBuilder();
-      foreach (var cls in classes) {
-        if (!IncludeClass(cls.Value)) continue;
-        classStrBuilder.Append(Impress(cls.Value));
-
-      }
-
-      File.WriteAllText(filePath, GeneratedTemplate + AllTemplate.Replace("${All}", classStrBuilder.ToString()));
-    }
-
-    public virtual void ImpressInto(Dictionary<string, ClassDeclarationSyntax> classes, string outputDir, string extension) {
-      foreach (var cls in classes) {
-        if (!IncludeClass(cls.Value)) continue;
-        string filename = cls.Key;
-        string filePath = Path.Combine(outputDir, filename + extension);
-        File.WriteAllText(filePath, GeneratedTemplate + Impress(cls.Value));
-      }
     }
 
     public virtual string Impress(Dictionary<string, ClassDeclarationSyntax> classes) {
@@ -81,21 +33,22 @@ namespace LetterPress.Deboss
     public string Impress(ClassDeclarationSyntax cls, string template) {
 
       if (!IncludeClass(cls)) return "";
-      ClassTemplate = template;
+      Forme.ClassTemplate = template;
 
       return Impress(cls);
     }
 
     public string Impress(ClassDeclarationSyntax cls, string template, bool? preserveDefaultTemplate) {
       string preserve = "";
+      if (Forme == null) Forme = new DefaultForme();
       if (!IncludeClass(cls)) return "";
-      if (preserveDefaultTemplate ?? false) preserve = ClassTemplate;
+      if (preserveDefaultTemplate ?? false) preserve = Forme.ClassTemplate;
 
-      ClassTemplate = template;
+      Forme.ClassTemplate = template;
 
       if (preserve.Length > 0) {
         var result = Impress(cls);
-        ClassTemplate = preserve;
+        Forme.ClassTemplate = preserve;
         return result;
       }
 
@@ -104,7 +57,7 @@ namespace LetterPress.Deboss
 
     public virtual string Impress(ClassDeclarationSyntax cls) =>
       (!IncludeClass(cls)) ? "" :
-      ClassTemplate
+      Forme.ClassTemplate
          .Replace(Clazz.ClassName, cls.Identifier.Text)
          .Replace(
             Clazz.TableName,
@@ -138,22 +91,22 @@ namespace LetterPress.Deboss
           );
 
     public string Impress(PropertyDeclarationSyntax prop, string template) {
-      PropertyTemplate = template;
+      Forme.PropertyTemplate = template;
       return Impress(prop);
     }
 
     public virtual string Impress(PropertyDeclarationSyntax prop) =>
-      PropertyTemplate
+      Forme.PropertyTemplate
         .Replace(Property.PropertyName, prop.Identifier.Text)
         .Replace(Property.PropertyType, prop.Type.ToString());
 
     public virtual string Impress(MethodDeclarationSyntax method, string template) {
-      MethodTemplate = template;
+      Forme.MethodTemplate = template;
       return Impress(method);
     }
 
     public virtual string Impress(MethodDeclarationSyntax method) =>
-      MethodTemplate
+      Forme.MethodTemplate
       .Replace(Method.MethodName, method.Identifier.Text)
       .Replace(Method.ReturnType, method.ReturnType.ToString())
       .Replace(Method.Parameters, 
@@ -166,11 +119,11 @@ namespace LetterPress.Deboss
         )
       );
     public string Impress(ParameterSyntax param, string template) {
-      ParameterTemplate = template;
+      Forme.ParameterTemplate = template;
       return Impress(param);
     }
     public virtual string Impress(ParameterSyntax param) {
-      return ParameterTemplate
+      return Forme.ParameterTemplate
         .Replace(Parameter.VariableName, param.Identifier.Text)
         .Replace(Parameter.VariableType, param.Type.ToString());
     }

@@ -11,7 +11,10 @@ using System.Text;
 namespace LetterPress.Deboss {
   public class TypescriptDeboss : DefaultDeboss {
 
-    public Dictionary<string, ClassDeclarationSyntax> Classes { get; set; }
+    /// <summary>
+    /// Used to resolve types of classes supplied to Deboss when generating templates.
+    /// </summary>
+    public Dictionary<string, ClassDeclarationSyntax> ReferenceClasses { get; set; }
     public override Func<ClassDeclarationSyntax, bool> IncludeClass { get; set; } = 
         (cls) => !cls.HasAttribute(typeof(NoTypeScript).Name);
     public override Func<PropertyDeclarationSyntax, bool> IncludeProperty { get; set; } =
@@ -20,7 +23,7 @@ namespace LetterPress.Deboss {
         (method) => !method.HasAttribute(typeof(NoTypeScript).Name);
     public override string Impress(ClassDeclarationSyntax cls) => !IncludeClass(cls)
       ? ""
-      : ClassTemplate
+      : Forme.ClassTemplate
         .Replace(Clazz.ClassName, cls.Identifier.Text)
         .Replace(Clazz.Properties,
            string.Join("",
@@ -41,19 +44,19 @@ namespace LetterPress.Deboss {
         );
     public override string Impress(PropertyDeclarationSyntax prop) => !IncludeProperty(prop)
       ? ""
-      : PropertyTemplate
+      : Forme.PropertyTemplate
         .Replace(Property.PropertyName, prop.Identifier.Text)
         .Replace(Property.PropertyType, TypeToTypecript(prop.Type, prop.Ancestors()));
 
     public override string Impress(MethodDeclarationSyntax method) => !IncludeMethod(method)
       ? ""
-      : MethodTemplate
+      : Forme.MethodTemplate
         .Replace(Method.MethodName, method.Identifier.Text)
         .Replace(Method.ReturnType, TypeToTypecript(method.ReturnType, method.Ancestors()))
         ;
 
     public override string Impress(ParameterSyntax param) =>
-      ParameterTemplate
+      Forme.ParameterTemplate
         .Replace(Parameter.VariableName, param.Identifier.Text)
         .Replace(Parameter.VariableType, TypeToTypecript(param.Type, param.Ancestors()))
         ;
@@ -89,15 +92,15 @@ namespace LetterPress.Deboss {
 
     private string TypeToTypecript(TypeSyntax type, IEnumerable<SyntaxNode> ancestors) {
       //PropertyDeclarationSyntax prop
-      if (Classes.ContainsKey(type.ToString())) {
-        return Classes[type.ToString()].Identifier.Text;
+      if (ReferenceClasses.ContainsKey(type.ToString())) {
+        return ReferenceClasses[type.ToString()].Identifier.Text;
       }
 
       if (type.ToString().StartsWith("List<")) {
         if (type is GenericNameSyntax genericType) {
           var innerType = genericType.TypeArgumentList.Arguments.FirstOrDefault();
-          if (Classes.ContainsKey(innerType.ToString())) {
-            return $"{Classes[innerType.ToString()].Identifier.Text}[]";
+          if (ReferenceClasses.ContainsKey(innerType.ToString())) {
+            return $"{ReferenceClasses[innerType.ToString()].Identifier.Text}[]";
           }
 
           return $"{TypescriptPrimitive(innerType.ToString())}[]";

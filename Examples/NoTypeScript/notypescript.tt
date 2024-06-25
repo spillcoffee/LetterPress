@@ -9,27 +9,32 @@
     Write("\n");
 #><#
 var press = new Press();
-press.LoadClassesFromDirectory($@"{currentDirectory}/Examples/Entities");
+press.LoadClasses($@"{currentDirectory}/Examples/Entities");
 
-var deboss = new TypescriptDeboss();
-deboss.LoadGeneratedTemplate(
-this.Host.ResolvePath($@"{currentDirectory}/Examples/generated.template")
+// Configure deboss
+var tsDeboss = new TypescriptDeboss();
+tsDeboss.ReferenceClasses = press.Classes;
+press.Deboss = tsDeboss;
+
+// Configure templates by specifying a IForme instance.
+var forme = new FileLoadForme();
+forme.LoadGeneratedTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/generated.template")
 );
-deboss.LoadClassTemplate(
+forme.LoadClassTemplate(
   this.Host.ResolvePath($@"{currentDirectory}/Examples/NoTypeScript/ts_class.template")
 );
-deboss.LoadPropertyTemplate(
+forme.LoadPropertyTemplate(
   this.Host.ResolvePath($@"{currentDirectory}/Examples/NoTypeScript/ts_property.template")
 );
+press.Forme = forme;
 
-// Add references to classes that are also being generated.
-deboss.Classes = press.Classes;
-
-deboss.ImpressInto(
-  press.Classes, // Classes to deboss
+// Generate code by "Inking" them.
+press.Ink(
   $@"{currentDirectory}/Examples/NoTypeScript/Output", // Output of deboss
-  (cls) => $"{deboss.Impress(cls, "${ClassName}", true)}.g.ts" // Filename to deboss to
+  (cls) => $"{press.Deboss.Impress(cls, "${ClassName}", true)}.g.ts" // Filename to deboss to
   );
+
 #>
 
 

@@ -9,32 +9,41 @@
     Write("\n");
 #><#
 var press = new Press();
-press.LoadClassesFromDirectory($@"{currentDirectory}/Examples/Entities");
+press.LoadClasses($@"{currentDirectory}/Examples/Entities");
 
-var deboss = new TypescriptDeboss();
-deboss.LoadGeneratedTemplate(
-this.Host.ResolvePath($@"{currentDirectory}/Examples/generated.template")
+// Configure deboss
+var tsDeboss = new TypescriptDeboss();
+tsDeboss.ReferenceClasses = press.Classes;
+press.Deboss = tsDeboss;
+
+// Configure templates by specifying a IForme instance.
+var forme = new FileLoadForme();
+forme.LoadGeneratedTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/generated.template")
 );
-deboss.LoadClassTemplate(
+forme.LoadClassTemplate(
   this.Host.ResolvePath($@"{currentDirectory}/Examples/NoTypeScriptOneFile/ts_class.template")
 );
-deboss.LoadPropertyTemplate(
+forme.LoadPropertyTemplate(
   this.Host.ResolvePath($@"{currentDirectory}/Examples/NoTypeScriptOneFile/ts_property.template")
 );
-
-// Add references to classes that are also being generated.
-deboss.Classes = press.Classes;
-
-deboss.LoadAllTemplate(
+forme.LoadAllTemplate(
   this.Host.ResolvePath($@"{currentDirectory}/Examples/NoTypeScriptOneFile/ts_all.template")
 );
 
-deboss.ImpressAllToFile(
-  press.Classes, // Classes to deboss
+// Specify a file to used for placement of generated classes, in this case
+// used to provide any needed imports for typescript.
+forme.LoadAllTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/NoTypeScriptOneFile/ts_all.template")
+);
+
+press.Forme = forme;
+
+
+press.InkToFile(
   $@"{currentDirectory}/Examples/NoTypeScriptOneFile/Output", // Output of deboss
   "ALL.g.ts" // Place all files into one file,
   );
-
 #>
 
 
