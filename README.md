@@ -77,7 +77,7 @@ ${Properties}
 // File: ts_property.template
     ${PropertyName}: ${PropertyType};
 ```
-### Can be incorporated into a .tt or .t4 template file
+### Example of T4 Template Usage
 Given the appropriate imports are inplace this can be added to a 
 t4 template to be called on build of a csproj, or during development in
 Visual Studio.  Examples of imports are in the /Examples directory using 
@@ -113,7 +113,7 @@ press.Ink(
 
 ```
 
-### Output into individual files
+### Output into Individual Files
 ```typescript
 // Generated file: Fidget.g.ts
 export interface IFidget {
@@ -162,7 +162,7 @@ export class Widget implements IWidget {
 }
 
 ```
-### Output all classes to a single file
+### Output All Classes to a Single File
 Change configuration of Forme and Press
 ```csharp
 // Specify a file to used for placement of generated classes, in this case
@@ -177,7 +177,7 @@ press.InkToFile(
   "ALL.g.ts" // Place all files into one file,
   );
 ```
-Inking creates a single file All*.**g*ts
+Inking creates a single file`All.g.ts`.
 ```typescript
 import { Datum } from "./Datum";
 
@@ -227,3 +227,7 @@ export class Widget extends Datum<IWidget> {
 }
 
 ```
+## Conclusion
+LetterPress is designed to simplify and enhance the development process by providing robust tools for code generation. By automating repetitive tasks and ensuring consistency across your codebase, it allows developers to focus on creating value-added features and improving overall productivity.
+
+Feel free to contribute to the project or report issues on our [GitHub repository](https://github.com/spillcoffee/LetterPress). Together, we can make development more efficient and enjoyable with LetterPress.
