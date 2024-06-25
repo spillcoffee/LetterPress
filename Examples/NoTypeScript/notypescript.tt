@@ -32,7 +32,7 @@ press.Forme = forme;
 // Generate code by "Inking" them.
 press.Ink(
   $@"{currentDirectory}/Examples/NoTypeScript/Output", // Output of deboss
-  (cls) => $"{press.Deboss.Impress(cls, "${ClassName}", true)}.g.ts" // Filename to deboss to
+  (cls) => $"{press.Deboss.Impress(cls, "${ClassName}", true)}.g.ts" // Filename to deboss into
   );
 
 #>
