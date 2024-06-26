@@ -13,9 +13,9 @@ using System.Text;
 namespace LetterPress.Deboss
 {
   public class DefaultDeboss : IDeboss {
-    public IForme Forme { get; set; }
+    public virtual IForme Forme { get; set; }
     public virtual Func<ClassDeclarationSyntax, bool> IncludeClass { get; set; }
-    public virtual Func<PropertyDeclarationSyntax, bool> IncludeProperty { get; set; }
+    public virtual Func<PropertyDeclarationSyntax, bool> IncludeProperty { get; set; } = (_) => true;
     public virtual Func<MethodDeclarationSyntax, bool> IncludeMethod { get; set; }
 
     public DefaultDeboss() {
@@ -32,36 +32,33 @@ namespace LetterPress.Deboss
 
     public string Impress(ClassDeclarationSyntax cls, string template) {
 
-      if (!IncludeClass(cls)) return "";
+      if (IncludeClass != null && !IncludeClass(cls)) return "";
       Forme.ClassTemplate = template;
 
       return Impress(cls);
     }
 
-    public string Impress(ClassDeclarationSyntax cls, string template, bool? preserveDefaultTemplate) {
+    public virtual string Impress(ClassDeclarationSyntax cls, string template, bool? preserveDefaultTemplate) {
       string preserve = "";
       if (Forme == null) Forme = new DefaultForme();
-      if (!IncludeClass(cls)) return "";
-      if (preserveDefaultTemplate ?? false) preserve = Forme.ClassTemplate;
-
-      Forme.ClassTemplate = template;
-
-      if (preserve.Length > 0) {
-        var result = Impress(cls);
-        Forme.ClassTemplate = preserve;
-        return result;
-      }
-
-      return Impress(cls);
+      if (IncludeClass != null && !IncludeClass(cls)) return "";
+      if (!preserveDefaultTemplate ?? false) Forme.ClassTemplate = template;
+      return ImpressTemplate(cls, template);
     }
-
     public virtual string Impress(ClassDeclarationSyntax cls) =>
-      (!IncludeClass(cls)) ? "" :
-      Forme.ClassTemplate
+      (IncludeClass != null && !IncludeClass(cls)) ? "" :
+      ImpressTemplate(cls, Forme.ClassTemplate);
+
+    private string ImpressTemplate(ClassDeclarationSyntax cls, string template) =>
+      template     
          .Replace(Clazz.ClassName, cls.Identifier.Text)
          .Replace(
             Clazz.TableName,
             cls.GetFirstAttrProperty("Table")?.Trim('"') ?? cls.Identifier.Text
+          )
+          .Replace(
+            Clazz.ClassAsArguement,
+            cls.name()
           )
           .Replace(
              Clazz.Generics,
@@ -89,6 +86,8 @@ namespace LetterPress.Deboss
              )
 
           );
+
+
 
     public string Impress(PropertyDeclarationSyntax prop, string template) {
       Forme.PropertyTemplate = template;

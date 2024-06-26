@@ -6,7 +6,7 @@ namespace LetterPress.Replacements {
   public class Property {
     public static string CSharpPropAsParam = "${CSharpPropAsParam}";
 
-    public static string PropertyName = "${PropertyName}";
-    public static string PropertyType = "${PropertyType}";
+    public static string PropertyName      = "${PropertyName}";
+    public static string PropertyType      = "${PropertyType}";
   }
 }

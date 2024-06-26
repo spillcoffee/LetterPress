@@ -1,5 +1,6 @@
 ﻿using LetterPress.Attributes;
 using LetterPress.Extensions;
+using LetterPress.Forme;
 using LetterPress.Replacements;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

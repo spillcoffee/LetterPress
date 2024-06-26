@@ -13,14 +13,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Examples\CSharpControllers\Output\" />
 	  <Folder Include="Examples\NoTypeScript\Output\" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
+  
+  <ItemGroup>
+    <Compile Remove="Examples\**\*.cs" />
+  </ItemGroup>
 
 	<ItemGroup>
+	  <None Update="Examples\CSharpControllers\csharpcontrollers.debug">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>csharpcontrollers.tt</DependentUpon>
+	  </None>
 	  <None Update="Examples\NoTypeScriptOneFile\notypescriptonefile.debug">
 	    <DesignTime>True</DesignTime>
 	    <AutoGen>True</AutoGen>
@@ -39,6 +49,10 @@
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	    <LastGenOutput>notypescript.debug</LastGenOutput>
 	  </None>
-	</ItemGroup>
+    <None Update="Examples\CSharpControllers\csharpcontrollers.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>csharpcontrollers.debug</LastGenOutput>
+    </None>
+  </ItemGroup>
 
 </Project>

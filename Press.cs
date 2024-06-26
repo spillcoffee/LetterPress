@@ -66,7 +66,7 @@ namespace LetterPress {
     public void Ink(string outputDir, string extension) {
       Deboss.Forme = Forme;
       foreach (var cls in Classes) {
-        if (!Deboss.IncludeClass(cls.Value)) continue;
+        if (Deboss.IncludeClass != null && !Deboss.IncludeClass(cls.Value)) continue;
         string filename = cls.Key;
         string filePath = Path.Combine(outputDir, filename + extension);
         File.WriteAllText(filePath, Forme.GeneratedTemplate + Deboss.Impress(cls.Value));
@@ -82,7 +82,7 @@ namespace LetterPress {
     public void Ink(string outputDir, Func<ClassDeclarationSyntax, string> fileName) {
       Deboss.Forme = Forme;
       foreach (var cls in Classes) {
-        if (!Deboss.IncludeClass(cls.Value)) continue;
+        if (Deboss.IncludeClass != null && !Deboss.IncludeClass(cls.Value)) continue;
         string filePath = Path.Combine(outputDir, fileName(cls.Value));
         File.WriteAllText(filePath, Forme.GeneratedTemplate + Deboss.Impress(cls.Value));
       }

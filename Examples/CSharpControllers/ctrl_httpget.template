@@ -1,0 +1,5 @@
+﻿
+    [HttpGet("${KeysAsUrl}")]
+    public IActionResult<List<${ClassName}>> GetAll(${KeysAsParams}) {
+      return Ok(_db.${TableName}.Single(x => ${KeysXEqParams}));
+    }

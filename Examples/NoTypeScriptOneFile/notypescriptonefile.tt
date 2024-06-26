@@ -39,7 +39,6 @@ forme.LoadAllTemplate(
 
 press.Forme = forme;
 
-
 press.InkToFile(
   $@"{currentDirectory}/Examples/NoTypeScriptOneFile/Output", // Output of deboss
   "ALL.g.ts" // Place all files into one file,

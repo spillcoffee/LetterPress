@@ -1,0 +1,10 @@
+﻿
+    [HttpPost()]
+    public IActionResult<${ClassName}> Post([FromBody] ${ClassName} ${ClassAsArgument}) {
+      ${ClassName} db${ClassName} = new ${ClassName}();
+${NewGuidKeys_A}
+${CopyProperties_AToB}
+      _db.Add(db${ClassName});
+      _db.SaveChanges();
+      return Ok(db${ClassName});
+    }

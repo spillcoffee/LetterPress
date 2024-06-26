@@ -1,0 +1,14 @@
+﻿using Microsoft.AspNetCore.Mvc;
+
+namespace CSharpControllers.Output.Controllers {
+  [Route("api/v1/${TableName}"), ApiController]
+  public class ${TableName} : Controller {
+    private readonly EntityDbContext _db;
+
+    public ${TableName}(EntityDbContext db) {
+      _db = db;
+    }
+
+${HttpPost}${HttpPut}${HttpGet}${HttpDelete}
+  }
+}

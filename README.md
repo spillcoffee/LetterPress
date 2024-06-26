@@ -57,7 +57,7 @@ public class Widget
 }
 ```
 
-### Example TypeScript templates
+### Example TypeScript Templates
 ```typescript
 // File: ts_class.template
 export interface I${ClassName} {

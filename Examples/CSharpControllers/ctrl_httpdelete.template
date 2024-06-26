@@ -1,0 +1,9 @@
+﻿
+    [HttpDelete()]
+    public IActionResult<${ClassName}> Delete([FromBody] ${ClassName} ${ClassAsArgument}) {
+      var db${ClassName} = _db.${TableName}.Single(x => ${KeysXEqClsAsParam});
+      db${ClassName}.DeletedAt = DateTime.Now;
+      _db.Add(db${ClassName});
+      _db.SaveChanges();
+      return Ok(db${ClassName});
+    }

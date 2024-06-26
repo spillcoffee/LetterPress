@@ -1,0 +1,9 @@
+﻿
+    [HttpPut()]
+    public IActionResult<${ClassName}> Put([FromBody] ${ClassName} ${ClassAsArgument}) {
+      var db${ClassName} = _db.${TableName}.Single(x => ${KeysXEqClsAsParam});
+${CopyProperties_AToB}
+      _db.Update(db${ClassName});
+      _db.SaveChanges();
+      return Ok(db${ClassName});
+    }

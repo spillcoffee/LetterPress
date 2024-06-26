@@ -1,0 +1,55 @@
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ output extension=".debug" #>
+<#@ include file="assemblies.t4" #>
+<#@ include file="imports.t4" #><#
+    string currentDirectory = Directory.GetCurrentDirectory();
+    WriteLine("Current Directory: " + currentDirectory);
+    Write("Framework Version: ");
+    Write(Environment.Version.ToString());
+    Write("\n");
+#><#
+var press = new Press();
+press.LoadClasses($@"{currentDirectory}/Examples/Entities");
+
+var defaultDeboss = press.Deboss;// Keep pointer to default deboss.
+var csharpDeboss = new CSharpControllerDeboss();
+csharpDeboss.KeysAsParamsPrefix = (_) => "[FromRoute] ";
+
+// Used in HttpPut and HttpPost to copy properties json body object. A DefaultDeboss
+// is used to prevent a recursive call to CSharpDeboss Impress method; allowing for use of
+// class template replacements for formulating the variable names.
+csharpDeboss.AName = (cls) => defaultDeboss.Impress(cls, "      db${ClassName}", true);
+csharpDeboss.BName = (cls) => defaultDeboss.Impress(cls, "${ClassAsArgument}", true);
+
+press.Deboss = csharpDeboss;
+var forme = new CSharpControllerForme();
+forme.LoadGeneratedTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/generated.template")
+);
+forme.LoadClassTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/CSharpControllers/ctrl_class.template")
+);
+forme.LoadHttpGetTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/CSharpControllers/ctrl_httpget.template")
+);
+forme.LoadHttpPutTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/CSharpControllers/ctrl_httpput.template")
+);
+forme.LoadHttpPostTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/CSharpControllers/ctrl_httppost.template")
+);
+forme.LoadHttpDeleteTemplate(
+  this.Host.ResolvePath($@"{currentDirectory}/Examples/CSharpControllers/ctrl_httpdelete.template")
+);
+
+press.Forme = forme;
+csharpDeboss.Forme = forme;
+
+// Generate code by "Inking" them.
+press.Ink(
+  $@"{currentDirectory}/Examples/CSharpControllers/Output", // Output of deboss
+  (cls) => $"{defaultDeboss.Impress(cls, "${TableName}", true)}.g.cs" // Filename to deboss into
+  );
+
+#>
+
